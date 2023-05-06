@@ -68,6 +68,7 @@ Sub VBA_Challenge()
         Dim total_stock_volume_row As Long
         total_stock_volume_row = 2
         
+        ticker_open = Cells(2, 3).Value
         
         'Loop of current worksheet to Lastrow
         
@@ -85,34 +86,37 @@ Sub VBA_Challenge()
                 'Calculate yearly change in Price
                 
                     ticker_close = ws.Cells(i, 6).Value
-                    ticker_open = ws.Cells(i, 3).Value
                     yearly_change = ticker_close - ticker_open
                     ws.Range("J" & Ticker_Row - 1).Value = yearly_change
                 
                'Calculate percent change
                 
-                If ticker_open <> 0 Then
-                    percent_change = (yearly_change / ticker_open) * 100
-                    ws.Range("K" & Ticker_Row - 1).Value = percent_change
-                End If
+                    If ticker_open <> 0 Then
+                        percent_change = (yearly_change / ticker_open) * 100
+                        ws.Range("K" & Ticker_Row - 1).Value = percent_change
+                    End If
+                    
+                    ticker_open = ws.Cells(i + 1, 3).Value
     
     
                 'Calculate total stock volume
                 
                 Ticker_volume = Ticker_volume + ws.Cells(i, 7).Value
-                If ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value Then
-                    ws.Range("L" & total_stock_volume_row).Value = Ticker_volume
-                    Ticker_volume = 0
-                    total_stock_volume_row = total_stock_volume_row + 1
-                End If
+    
+                ws.Range("L" & total_stock_volume_row).Value = Ticker_volume
+                Ticker_volume = 0
+                total_stock_volume_row = total_stock_volume_row + 1
+                 
                               
                 'Reset variables for next ticker
                 
                 yearly_change = 0
                 percent_change = 0
 
-                ElseIf ticker_open <> 0 Then
-                    percent_change = (yearly_change / ticker_open) * 100
+                'ElseIf ticker_open <> 0 Then
+                    'percent_change = (yearly_change / ticker_open) * 100
+                Else
+                    Ticker_volume = Ticker_volume + ws.Cells(i, 7).Value
                 End If
 
             Next i
@@ -127,6 +131,7 @@ Sub VBA_Challenge()
         
             Next c
             
+            'Set variables for greatest increase, decrease, greatest total volume, and related stock ticker
             Percent_Max = 0
             Percent_Min = 0
             Max_Volume = 0
@@ -166,4 +171,5 @@ Sub VBA_Challenge()
     Next ws
 
 End Sub
+
 
